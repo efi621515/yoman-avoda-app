@@ -7828,6 +7828,7 @@ class RealSyncManager {
             this.db = getFirestore(app);
             
             console.log('✅ Firebase הוגדר בהצלחה');
+            console.log('🔍 Firebase DB:', this.db);
             return true;
         } catch (error) {
             console.error('❌ שגיאה בהגדרת Firebase:', error);
@@ -7895,6 +7896,13 @@ class RealSyncManager {
                     this.showSyncStatus('💾 נתונים נשמרו מקומית');
                     return;
                 }
+            }
+            
+            // בדיקה נוספת
+            if (!this.db) {
+                console.error('❌ Firebase לא מאותחל!');
+                this.showSyncStatus('❌ Firebase לא זמין');
+                return;
             }
             
             await this.syncData();
@@ -8050,6 +8058,14 @@ class RealSyncManager {
         
         try {
             const { collection, query, orderBy, limit, getDocs } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+            
+            // בדיקה נוספת
+            if (!this.db) {
+                console.error('❌ Firebase DB לא זמין!');
+                return;
+            }
+            
+            console.log('🔍 Firebase DB זמין:', this.db);
             
             // קבלת כל המכשירים
             const syncRef = collection(this.db, 'sync');
