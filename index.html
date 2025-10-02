@@ -7829,6 +7829,14 @@ class RealSyncManager {
             
             console.log('✅ Firebase הוגדר בהצלחה');
             console.log('🔍 Firebase DB:', this.db);
+            console.log('🔍 Firebase App:', app);
+            
+            // בדיקה נוספת
+            if (!this.db) {
+                console.error('❌ Firebase DB לא מאותחל!');
+                return false;
+            }
+            
             return true;
         } catch (error) {
             console.error('❌ שגיאה בהגדרת Firebase:', error);
@@ -7946,6 +7954,8 @@ class RealSyncManager {
         }
         
         console.log('✅ Firebase זמין - מעלה נתונים לענן');
+        console.log('🔍 Firebase DB type:', typeof this.db);
+        console.log('🔍 Firebase DB constructor:', this.db.constructor.name);
         
         // בדיקה אם זה נהג - הגבלת נתונים
         const isDriver = userType === 'driver';
@@ -8066,6 +8076,8 @@ class RealSyncManager {
             }
             
             console.log('🔍 Firebase DB זמין:', this.db);
+            console.log('🔍 Firebase DB type:', typeof this.db);
+            console.log('🔍 Firebase DB constructor:', this.db.constructor.name);
             
             // קבלת כל המכשירים
             const syncRef = collection(this.db, 'sync');
