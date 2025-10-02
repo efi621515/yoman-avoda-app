@@ -7907,6 +7907,11 @@ class RealSyncManager {
             }
             
             // בדיקה נוספת
+            console.log('🔍 Firebase DB לפני בדיקה:', this.db);
+            console.log('🔍 Firebase DB type:', typeof this.db);
+            console.log('🔍 Firebase DB constructor:', this.db?.constructor?.name);
+            
+            // בדיקה נוספת
             if (!this.db) {
                 console.error('❌ Firebase לא מאותחל!');
                 this.showSyncStatus('❌ Firebase לא זמין');
@@ -7955,7 +7960,9 @@ class RealSyncManager {
         
         console.log('✅ Firebase זמין - מעלה נתונים לענן');
         console.log('🔍 Firebase DB type:', typeof this.db);
-        console.log('🔍 Firebase DB constructor:', this.db.constructor.name);
+        console.log('🔍 Firebase DB constructor:', this.db?.constructor?.name);
+        console.log('🔍 Firebase DB is null?', this.db === null);
+        console.log('🔍 Firebase DB is undefined?', this.db === undefined);
         
         // בדיקה אם זה נהג - הגבלת נתונים
         const isDriver = userType === 'driver';
@@ -8077,7 +8084,9 @@ class RealSyncManager {
             
             console.log('🔍 Firebase DB זמין:', this.db);
             console.log('🔍 Firebase DB type:', typeof this.db);
-            console.log('🔍 Firebase DB constructor:', this.db.constructor.name);
+            console.log('🔍 Firebase DB constructor:', this.db?.constructor?.name);
+            console.log('🔍 Firebase DB is null?', this.db === null);
+            console.log('🔍 Firebase DB is undefined?', this.db === undefined);
             
             // קבלת כל המכשירים
             const syncRef = collection(this.db, 'sync');
