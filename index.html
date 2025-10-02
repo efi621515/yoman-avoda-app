@@ -7888,9 +7888,12 @@ class RealSyncManager {
             
             // הגדרת Firebase אם לא הוגדר
             if (!this.db) {
+                console.log('🔧 מגדיר Firebase...');
                 const firebaseReady = await this.setupFirebase();
                 if (!firebaseReady) {
                     console.log('⚠️ Firebase לא זמין - משתמש בסנכרון מקומי');
+                    this.showSyncStatus('💾 נתונים נשמרו מקומית');
+                    return;
                 }
             }
             
@@ -7933,6 +7936,8 @@ class RealSyncManager {
             this.syncWithLocalStorage();
             return;
         }
+        
+        console.log('✅ Firebase זמין - מעלה נתונים לענן');
         
         // בדיקה אם זה נהג - הגבלת נתונים
         const isDriver = userType === 'driver';
