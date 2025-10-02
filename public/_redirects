@@ -1,0 +1,12 @@
+# Netlify redirects for SPA
+/*    /index.html   200
+
+# Service Worker
+/sw.js    /sw.js    200
+
+# Manifest
+/manifest.json    /manifest.json    200
+
+# Assets
+/assets/*    /assets/*    200
+

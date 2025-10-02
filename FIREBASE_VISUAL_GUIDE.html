@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מדריך הגדרת Firebase</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            color: #333;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .step {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            border-left: 5px solid #4CAF50;
+            text-align: right;
+        }
+        .step h3 {
+            color: #4CAF50;
+            margin-top: 0;
+        }
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            text-align: left;
+            overflow-x: auto;
+        }
+        .button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .button:hover {
+            background: #45a049;
+        }
+        .warning {
+            background: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            border-left: 5px solid #ffc107;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            border-left: 5px solid #28a745;
+        }
+        .link {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔥 מדריך הגדרת Firebase</h1>
+        <p><strong>הבעיה:</strong> הנתונים לא מסתנכרנים בין המחשב לפון כי Firebase לא מוגדר</p>
+        
+        <div class="warning">
+            <strong>⚠️ חשוב:</strong> בלי הגדרת Firebase, הסנכרון לא יעבוד!
+        </div>
+        
+        <div class="step">
+            <h3>שלב 1: יצירת פרויקט Firebase</h3>
+            <p>1. לך ל-<a href="https://console.firebase.google.com/" target="_blank" class="link">Firebase Console</a></p>
+            <p>2. לחץ על "Create a project"</p>
+            <p>3. שם הפרויקט: <strong>yoman-avoda-sync</strong></p>
+            <p>4. לחץ "Create project"</p>
+        </div>
+        
+        <div class="step">
+            <h3>שלב 2: הפעלת Firestore</h3>
+            <p>1. בפרויקט החדש, לך ל-"Firestore Database"</p>
+            <p>2. לחץ "Create database"</p>
+            <p>3. בחר "Start in test mode"</p>
+            <p>4. בחר מיקום: <strong>europe-west1</strong></p>
+            <p>5. לחץ "Done"</p>
+        </div>
+        
+        <div class="step">
+            <h3>שלב 3: קבלת מפתחות API</h3>
+            <p>1. לך ל-"Project Settings" (⚙️)</p>
+            <p>2. בחר "General" tab</p>
+            <p>3. גלול למטה ל-"Your apps"</p>
+            <p>4. לחץ על אייקון Web (</>)</p>
+            <p>5. שם האפליקציה: <strong>yoman-avoda-web</strong></p>
+            <p>6. לחץ "Register app"</p>
+            <p>7. <strong>העתק את הקוד שנוצר!</strong></p>
+        </div>
+        
+        <div class="step">
+            <h3>שלב 4: עדכון הקוד</h3>
+            <p>החלף את ההגדרות ב-<strong>index.html</strong> בשורה 7802:</p>
+            <div class="code-block">
+const firebaseConfig = {
+    apiKey: "המפתח שלך כאן",
+    authDomain: "yoman-avoda-sync.firebaseapp.com",
+    projectId: "yoman-avoda-sync",
+    storageBucket: "yoman-avoda-sync.appspot.com",
+    messagingSenderId: "המספר שלך",
+    appId: "המזהה שלך"
+};
+            </div>
+        </div>
+        
+        <div class="step">
+            <h3>שלב 5: הגדרת כללי אבטחה</h3>
+            <p>1. לך ל-"Firestore Database" → "Rules"</p>
+            <p>2. החלף את הכללים:</p>
+            <div class="code-block">
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}
+            </div>
+            <p>3. לחץ "Publish"</p>
+        </div>
+        
+        <div class="step">
+            <h3>שלב 6: בדיקה</h3>
+            <p>1. שמור את הקובץ index.html</p>
+            <p>2. העלה ל-Netlify</p>
+            <p>3. פתח את האפליקציה בפון</p>
+            <p>4. לך להגדרות → סנכרון</p>
+            <p>5. לחץ "סנכרן עכשיו"</p>
+        </div>
+        
+        <div class="success">
+            <h3>✅ אחרי ההגדרה:</h3>
+            <ul style="text-align: right;">
+                <li>הנתונים יסתנכרנו אוטומטית בין המכשירים</li>
+                <li>כל מכשיר יראה את הנתונים של האחר</li>
+                <li>הסנכרון יעבוד בזמן אמת</li>
+                <li>האפליקציה תעבוד מושלם על כל המכשירים</li>
+            </ul>
+        </div>
+        
+        <div class="warning">
+            <h3>🆘 אם יש בעיה:</h3>
+            <ul style="text-align: right;">
+                <li>בדוק שהמפתחות נכונים</li>
+                <li>בדוק שהכללים נשמרו</li>
+                <li>בדוק שהפרויקט פעיל</li>
+                <li>בדוק בקונסולה של הדפדפן</li>
+            </ul>
+        </div>
+        
+        <a href="https://console.firebase.google.com/" target="_blank" class="button">🚀 התחל עכשיו</a>
+        <a href="quick_firebase_test.html" class="button">🔍 בדוק הגדרות</a>
+    </div>
+</body>
+</html>

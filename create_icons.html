@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>יצירת אייקונים ל-PWA</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; text-align: center; }
+        canvas { border: 1px solid #ccc; margin: 10px; }
+        button { padding: 10px 20px; margin: 10px; background: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>יצירת אייקונים ל-PWA</h1>
+    <p>לחץ על הכפתורים ליצירת אייקונים</p>
+    
+    <div>
+        <canvas id="icon192" width="192" height="192"></canvas>
+        <canvas id="icon512" width="512" height="512"></canvas>
+    </div>
+    
+    <div>
+        <button onclick="createIcons()">יצור אייקונים</button>
+        <button onclick="downloadIcons()">הורד אייקונים</button>
+    </div>
+
+    <script>
+        function createIcons() {
+            // יצירת אייקון 192x192
+            const canvas192 = document.getElementById('icon192');
+            const ctx192 = canvas192.getContext('2d');
+            
+            // רקע ירוק
+            ctx192.fillStyle = '#4CAF50';
+            ctx192.fillRect(0, 0, 192, 192);
+            
+            // טקסט E.S
+            ctx192.fillStyle = 'white';
+            ctx192.font = 'bold 60px Arial';
+            ctx192.textAlign = 'center';
+            ctx192.textBaseline = 'middle';
+            ctx192.fillText('E.S', 96, 96);
+            
+            // יצירת אייקון 512x512
+            const canvas512 = document.getElementById('icon512');
+            const ctx512 = canvas512.getContext('2d');
+            
+            // רקע ירוק
+            ctx512.fillStyle = '#4CAF50';
+            ctx512.fillRect(0, 0, 512, 512);
+            
+            // טקסט E.S
+            ctx512.fillStyle = 'white';
+            ctx512.font = 'bold 160px Arial';
+            ctx512.textAlign = 'center';
+            ctx512.textBaseline = 'middle';
+            ctx512.fillText('E.S', 256, 256);
+            
+            console.log('✅ אייקונים נוצרו');
+        }
+        
+        function downloadIcons() {
+            // הורדת אייקון 192x192
+            const canvas192 = document.getElementById('icon192');
+            const link192 = document.createElement('a');
+            link192.download = 'icon-192.png';
+            link192.href = canvas192.toDataURL();
+            link192.click();
+            
+            // הורדת אייקון 512x512
+            const canvas512 = document.getElementById('icon512');
+            const link512 = document.createElement('a');
+            link512.download = 'icon-512.png';
+            link512.href = canvas512.toDataURL();
+            link512.click();
+            
+            console.log('📥 אייקונים הורדו');
+        }
+        
+        // יצירה אוטומטית
+        createIcons();
+    </script>
+</body>
+</html>
+
