@@ -7833,6 +7833,14 @@ class RealSyncManager {
             console.log('🔍 Firebase DB type:', typeof this.db);
             console.log('🔍 Firebase DB constructor:', this.db?.constructor?.name);
             
+            // בדיקה נוספת - נסה לגשת ל-Firestore
+            try {
+                const testCollection = this.db.collection('test');
+                console.log('✅ Firebase Firestore זמין:', testCollection);
+            } catch (error) {
+                console.error('❌ שגיאה בגישה ל-Firestore:', error);
+            }
+            
             // בדיקה נוספת
             if (!this.db) {
                 console.error('❌ Firebase DB לא מאותחל!');
@@ -7911,6 +7919,16 @@ class RealSyncManager {
         console.log('🔍 Firebase DB אחרי setupFirebase:', this.db);
         console.log('🔍 Firebase DB type:', typeof this.db);
         console.log('🔍 Firebase DB constructor:', this.db?.constructor?.name);
+        
+        // בדיקה נוספת - נסה לגשת ל-Firestore
+        if (this.db) {
+            try {
+                const testCollection = this.db.collection('test');
+                console.log('✅ Firebase Firestore זמין בסנכרון:', testCollection);
+            } catch (error) {
+                console.error('❌ שגיאה בגישה ל-Firestore בסנכרון:', error);
+            }
+        }
             }
             
             // בדיקה נוספת
