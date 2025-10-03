@@ -7864,7 +7864,7 @@ class RealSyncManager {
         });
 
         window.addEventListener('offline', () => {
-            this.isOnline = false;
+            // לא משנה את isOnline - תמיד נחשב שיש חיבור
             this.showSyncStatus('🔴 לא מחובר לאינטרנט');
         });
 
@@ -9247,7 +9247,7 @@ class SyncManager {
         });
 
         window.addEventListener('offline', () => {
-            this.isOnline = false;
+            // לא משנה את isOnline - תמיד נחשב שיש חיבור
             this.showSyncStatus('🔴 לא מחובר לאינטרנט');
         });
 
