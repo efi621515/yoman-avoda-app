@@ -1175,6 +1175,9 @@
                 <button onclick="manualSync()" style="background: #00BCD4; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px;">
                     🔄 סנכרן נתונים
                 </button>
+                <button onclick="setupGitHubToken()" style="background: #6f42c1; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px;">
+                    🔑 הגדר GitHub Token
+                </button>
                 <button onclick="logout()" style="background: #f44336; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px;">
                     🚪 התנתק
                 </button>
@@ -7794,72 +7797,36 @@ class RealSyncManager {
         return deviceId;
     }
 
-    // הגדרת Firebase
-    async setupFirebase() {
+    // הגדרת GitHub API
+    async setupGitHub() {
         try {
-            // בדיקה אם Firebase מוגדר
-            const firebaseConfig = {
-                apiKey: "AIzaSyAn6THqb-twaNKpLv1_1L08HaU-QlVKhc0",
-                authDomain: "yoman-avoda-sync.firebaseapp.com",
-                projectId: "yoman-avoda-sync",
-                storageBucket: "yoman-avoda-sync.firebasestorage.app",
-                messagingSenderId: "617017312129",
-                appId: "1:617017312129:web:250e31dd7ef9b724ebde80"
-            };
-
-            // בדיקה אם ההגדרות עדיין placeholder
-            console.log('🔍 בודק Firebase config:', firebaseConfig.apiKey);
-            console.log('🔍 Firebase config מלא:', firebaseConfig);
-            if (firebaseConfig.apiKey === "your-api-key-here" || firebaseConfig.apiKey === "") {
-                console.warn('⚠️ Firebase לא הוגדר - סנכרון יעבוד עם localStorage');
+            console.log('🔧 מאתחל GitHub API...');
+            
+            // בדיקה אם GitHub token קיים
+            const token = localStorage.getItem('github_token');
+            if (!token) {
+                console.warn('⚠️ GitHub token לא נמצא - סנכרון יעבוד עם localStorage');
                 return false;
             }
-            console.log('✅ Firebase config תקין!');
 
-            // Dynamic import of Firebase
-            console.log('🔧 טוען Firebase מ-CDN...');
-            try {
-                const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
-                const { getFirestore } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
-                console.log('✅ Firebase נטען מ-CDN בהצלחה');
-            } catch (error) {
-                console.error('❌ שגיאה בטעינת Firebase מ-CDN:', error);
-                throw error;
-            }
-
-            // בדיקה אם Firebase כבר מאותחל
-            if (this.db) {
-                console.log('✅ Firebase כבר מאותחל');
-                return true;
-            }
-
-            const app = initializeApp(firebaseConfig);
-            this.db = getFirestore(app);
-            
-            console.log('✅ Firebase הוגדר בהצלחה');
-            console.log('🔍 Firebase DB:', this.db);
-            console.log('🔍 Firebase App:', app);
-            console.log('🔍 Firebase DB type:', typeof this.db);
-            console.log('🔍 Firebase DB constructor:', this.db?.constructor?.name);
-            
-            // בדיקה נוספת - נסה לגשת ל-Firestore
-            try {
-                const testCollection = this.db.collection('test');
-                console.log('✅ Firebase Firestore זמין:', testCollection);
-            } catch (error) {
-                console.error('❌ שגיאה בגישה ל-Firestore:', error);
-            }
-            
-            // בדיקה נוספת
-            if (!this.db) {
-                console.error('❌ Firebase DB לא מאותחל!');
+            // אתחול GitHub Sync Manager
+            if (window.githubSyncManager) {
+                window.githubSyncManager.setToken(token);
+                const initialized = await window.githubSyncManager.initialize();
+                if (initialized) {
+                    console.log('✅ GitHub API הוגדר בהצלחה');
+                    return true;
+                } else {
+                    console.warn('⚠️ GitHub API לא זמין - סנכרון יעבוד עם localStorage');
+                    return false;
+                }
+            } else {
+                console.warn('⚠️ GitHub Sync Manager לא נטען - סנכרון יעבוד עם localStorage');
                 return false;
             }
-            
-            return true;
         } catch (error) {
-            console.error('❌ שגיאה בהגדרת Firebase:', error);
-            console.warn('⚠️ Firebase לא זמין - סנכרון יעבוד עם localStorage');
+            console.error('❌ שגיאה בהגדרת GitHub API:', error);
+            console.warn('⚠️ GitHub API לא זמין - סנכרון יעבוד עם localStorage');
             return false;
         }
     }
@@ -7918,17 +7885,17 @@ class RealSyncManager {
             // הגדרת Firebase אם לא הוגדר
             if (!this.db) {
         console.log('🔧 מגדיר Firebase...');
-        const firebaseReady = await this.setupFirebase();
-        if (!firebaseReady) {
+        const githubReady = await this.setupGitHub();
+        if (!githubReady) {
             console.log('⚠️ Firebase לא זמין - משתמש בסנכרון מקומי');
             this.showSyncStatus('💾 נתונים נשמרו מקומית');
             return;
         }
         
-        // בדיקה נוספת של Firebase
-        console.log('🔍 Firebase DB אחרי setupFirebase:', this.db);
-        console.log('🔍 Firebase DB type:', typeof this.db);
-        console.log('🔍 Firebase DB constructor:', this.db?.constructor?.name);
+        // בדיקה נוספת של GitHub
+        console.log('🔍 GitHub Sync Manager אחרי setupGitHub:', window.githubSyncManager);
+        console.log('🔍 GitHub Sync Manager type:', typeof window.githubSyncManager);
+        console.log('🔍 GitHub Sync Manager status:', window.githubSyncManager?.getStatus());
         
         // בדיקה נוספת - נסה לגשת ל-Firestore
         if (this.db) {
@@ -7992,24 +7959,13 @@ class RealSyncManager {
     async uploadLocalData() {
         console.log('📤 מעלה נתונים לענן...');
         
-        if (!this.db) {
-            console.warn('⚠️ Firebase לא זמין - סנכרון עם localStorage');
+        if (!window.githubSyncManager || !window.githubSyncManager.isInitialized) {
+            console.warn('⚠️ GitHub API לא זמין - סנכרון עם localStorage');
             this.syncWithLocalStorage();
             return;
         }
         
-        console.log('✅ Firebase זמין - מעלה נתונים לענן');
-        console.log('🔍 Firebase DB type:', typeof this.db);
-        console.log('🔍 Firebase DB constructor:', this.db?.constructor?.name);
-        console.log('🔍 Firebase DB is null?', this.db === null);
-        console.log('🔍 Firebase DB is undefined?', this.db === undefined);
-        
-        // בדיקה נוספת של Firebase
-        if (!this.db) {
-            console.error('❌ Firebase DB לא זמין בפונקציית ההעלאה!');
-            this.syncWithLocalStorage();
-            return;
-        }
+        console.log('✅ GitHub API זמין - מעלה נתונים לענן');
         
         // הוספת נתונים לבדיקה
         console.log('🧪 מוסיף נתונים לבדיקה...');
@@ -8019,7 +7975,15 @@ class RealSyncManager {
             message: 'נתוני בדיקה מהמחשב'
         };
         localData.testData = testData;
-        console.log('✅ נתוני בדיקה הועלו לענן');
+        
+        // העלאת נתונים ל-GitHub
+        const success = await window.githubSyncManager.uploadData(localData);
+        if (success) {
+            console.log('✅ נתוני בדיקה הועלו לענן');
+        } else {
+            console.warn('⚠️ שגיאה בהעלאת נתונים - סנכרון עם localStorage');
+            this.syncWithLocalStorage();
+        }
         
         // בדיקה נוספת של Firebase
         if (!this.db) {
@@ -9098,32 +9062,21 @@ class RealSyncManager {
     async downloadCloudData() {
         console.log('📥 מוריד נתונים מהענן...');
         
-        if (!this.db) {
-            console.warn('⚠️ Firebase לא זמין - דילוג על הורדה');
+        if (!window.githubSyncManager || !window.githubSyncManager.isInitialized) {
+            console.warn('⚠️ GitHub API לא זמין - דילוג על הורדה');
             return;
         }
         
         try {
-            const { collection, query, orderBy, limit, getDocs } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
-            
-            // בדיקה נוספת
-            if (!this.db) {
-                console.error('❌ Firebase DB לא זמין!');
-                return;
+            // הורדת נתונים מ-GitHub
+            const cloudData = await window.githubSyncManager.downloadData();
+            if (cloudData) {
+                console.log('✅ נתונים הורדו מ-GitHub בהצלחה');
+                // כאן אפשר לטפל בנתונים שהורדו
+                console.log('📊 נתונים מהענן:', cloudData);
+            } else {
+                console.log('📁 אין נתונים בענן - ממשיך עם נתונים מקומיים');
             }
-            
-            console.log('🔍 Firebase DB זמין:', this.db);
-            
-            // הוספת נתונים לבדיקה
-            console.log('🧪 מוסיף נתונים לבדיקה...');
-            const testData = {
-                test: true,
-                timestamp: new Date().toISOString(),
-                message: 'נתוני בדיקה מהענן'
-            };
-            // נשמור את נתוני הבדיקה ב-localStorage
-            localStorage.setItem('testData', JSON.stringify(testData));
-            console.log('✅ נתוני בדיקה נשמרו ב-localStorage');
             console.log('🔍 Firebase DB type:', typeof this.db);
             console.log('🔍 Firebase DB constructor:', this.db?.constructor?.name);
             console.log('🔍 Firebase DB is null?', this.db === null);
@@ -10821,6 +10774,31 @@ function resetAllSettings() {
     }
 }
 
+// הגדרת GitHub Token
+function setupGitHubToken() {
+    const token = prompt('הזן את ה-GitHub Personal Access Token שלך:\n\n1. לך ל-GitHub.com\n2. Settings > Developer settings > Personal access tokens\n3. צור token חדש עם הרשאות repo\n4. העתק את ה-token כאן');
+    
+    if (token && token.trim()) {
+        localStorage.setItem('github_token', token.trim());
+        console.log('✅ GitHub token נשמר');
+        alert('GitHub token נשמר בהצלחה! עכשיו תוכל לסנכרן נתונים.');
+        
+        // אתחול מחדש של GitHub Sync Manager
+        if (window.githubSyncManager) {
+            window.githubSyncManager.setToken(token.trim());
+            window.githubSyncManager.initialize().then(success => {
+                if (success) {
+                    console.log('✅ GitHub Sync Manager אותחל בהצלחה');
+                } else {
+                    console.warn('⚠️ GitHub Sync Manager לא אותחל');
+                }
+            });
+        }
+    } else {
+        console.log('❌ GitHub token לא הוזן');
+    }
+}
+
 function loadSettings() {
     // טעינת הגדרות חברה
     const companySettings = JSON.parse(localStorage.getItem('companySettings') || '{}');
@@ -10894,3 +10872,6 @@ function updateSystemInfo() {
     document.getElementById('data-size').textContent = (dataSize / 1024).toFixed(2) + ' KB';
 }
 </script>
+
+<!-- GitHub Sync Manager -->
+<script src="github-sync-manager.js"></script>
