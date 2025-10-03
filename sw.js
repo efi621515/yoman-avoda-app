@@ -1,5 +1,5 @@
 // Service Worker for יומן עבודה PWA
-const CACHE_NAME = 'work-diary-v2.0.0';
+const CACHE_NAME = 'work-diary-v3.0.0';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -12,14 +12,24 @@ const urlsToCache = [
 self.addEventListener('install', event => {
   console.log('🔧 Service Worker: מתקין...');
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => {
-        console.log('✅ Service Worker: שמירת קבצים ב-cache');
-        return cache.addAll(urlsToCache);
-      })
-      .catch(error => {
-        console.error('❌ Service Worker: שגיאה בשמירת cache:', error);
-      })
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          if (cacheName !== CACHE_NAME) {
+            console.log('🗑️ Service Worker: מוחק cache ישן:', cacheName);
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    }).then(() => {
+      return caches.open(CACHE_NAME);
+    }).then(cache => {
+      console.log('✅ Service Worker: שמירת קבצים ב-cache');
+      return cache.addAll(urlsToCache);
+    })
+    .catch(error => {
+      console.error('❌ Service Worker: שגיאה בשמירת cache:', error);
+    })
   );
 });
 
