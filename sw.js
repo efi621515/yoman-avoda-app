@@ -1,5 +1,5 @@
 // Service Worker for יומן עבודה PWA
-const CACHE_NAME = 'work-diary-v1.0.0';
+const CACHE_NAME = 'work-diary-v2.0.0';
 const urlsToCache = [
   '/',
   '/index.html',
