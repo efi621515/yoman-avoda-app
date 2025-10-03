@@ -7830,6 +7830,8 @@ class RealSyncManager {
             console.log('✅ Firebase הוגדר בהצלחה');
             console.log('🔍 Firebase DB:', this.db);
             console.log('🔍 Firebase App:', app);
+            console.log('🔍 Firebase DB type:', typeof this.db);
+            console.log('🔍 Firebase DB constructor:', this.db?.constructor?.name);
             
             // בדיקה נוספת
             if (!this.db) {
@@ -7897,13 +7899,18 @@ class RealSyncManager {
             
             // הגדרת Firebase אם לא הוגדר
             if (!this.db) {
-                console.log('🔧 מגדיר Firebase...');
-                const firebaseReady = await this.setupFirebase();
-                if (!firebaseReady) {
-                    console.log('⚠️ Firebase לא זמין - משתמש בסנכרון מקומי');
-                    this.showSyncStatus('💾 נתונים נשמרו מקומית');
-                    return;
-                }
+        console.log('🔧 מגדיר Firebase...');
+        const firebaseReady = await this.setupFirebase();
+        if (!firebaseReady) {
+            console.log('⚠️ Firebase לא זמין - משתמש בסנכרון מקומי');
+            this.showSyncStatus('💾 נתונים נשמרו מקומית');
+            return;
+        }
+        
+        // בדיקה נוספת של Firebase
+        console.log('🔍 Firebase DB אחרי setupFirebase:', this.db);
+        console.log('🔍 Firebase DB type:', typeof this.db);
+        console.log('🔍 Firebase DB constructor:', this.db?.constructor?.name);
             }
             
             // בדיקה נוספת
