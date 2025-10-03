@@ -7976,6 +7976,16 @@ class RealSyncManager {
             return;
         }
         
+        // הוספת נתונים לבדיקה
+        console.log('🧪 מוסיף נתונים לבדיקה...');
+        const testData = {
+            test: true,
+            timestamp: new Date().toISOString(),
+            message: 'נתוני בדיקה מהמחשב'
+        };
+        localData.testData = testData;
+        console.log('✅ נתוני בדיקה הועלו לענן');
+        
         // בדיקה נוספת של Firebase
         if (!this.db) {
             console.error('❌ Firebase DB לא זמין בפונקציית ההורדה!');
@@ -9068,6 +9078,17 @@ class RealSyncManager {
             }
             
             console.log('🔍 Firebase DB זמין:', this.db);
+            
+            // הוספת נתונים לבדיקה
+            console.log('🧪 מוסיף נתונים לבדיקה...');
+            const testData = {
+                test: true,
+                timestamp: new Date().toISOString(),
+                message: 'נתוני בדיקה מהענן'
+            };
+            // נשמור את נתוני הבדיקה ב-localStorage
+            localStorage.setItem('testData', JSON.stringify(testData));
+            console.log('✅ נתוני בדיקה נשמרו ב-localStorage');
             console.log('🔍 Firebase DB type:', typeof this.db);
             console.log('🔍 Firebase DB constructor:', this.db?.constructor?.name);
             console.log('🔍 Firebase DB is null?', this.db === null);
