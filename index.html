@@ -7776,7 +7776,7 @@ if ('serviceWorker' in navigator) {
 // Real Sync Manager - מערכת סנכרון אמיתית
 class RealSyncManager {
     constructor() {
-        this.isOnline = navigator.onLine;
+        this.isOnline = true; // תמיד נחשב שיש חיבור
         this.syncInProgress = false;
         this.lastSyncTime = null;
         this.deviceId = this.getDeviceId();
