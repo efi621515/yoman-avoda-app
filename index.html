@@ -9224,9 +9224,13 @@ class RealSyncManager {
 
 // יצירת מופע גלובלי
 const realSyncManager = new RealSyncManager();
+console.log('🔧 realSyncManager מאותחל:', realSyncManager);
 
 // פונקציות גלובליות
-window.manualSync = () => realSyncManager.manualSync();
+window.manualSync = () => {
+    console.log('🚀 window.manualSync נקרא!');
+    return realSyncManager.manualSync();
+};
 window.getSyncStatus = () => realSyncManager.getLastSyncTime();
 window.getConnectionStatus = () => realSyncManager.getConnectionStatus();
 window.getDeviceId = () => realSyncManager.getDeviceId();
